@@ -1,8 +1,9 @@
 const express = require("express");
+require("dotenv").config();
 
 const app = express();
 
-const port = 5000;
+const port = process.env.APP_PORT ?? 5000;
 
 const welcome = (req, res) => {
   res.send("Welcome to my favourite movie list");
@@ -11,32 +12,18 @@ const welcome = (req, res) => {
 app.get("/", welcome);
 
 const movieHandlers = require("./movieHandlers");
+const userHandlers = require("./userHandlers");
 
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
+
+app.get("/api/users", userHandlers.getUsers);
+app.get("/api/users/:id", userHandlers.getUserById);
 
 app.listen(port, (err) => {
   if (err) {
     console.error("Something bad happened");
   } else {
     console.log(`Server is listening on ${port}`);
-}
-});
-
-app.get("/api/users", (req,res) => {
-    res.status(200)
-    .query("select * from users").json
-})
-
-const userById = ((req, res) => {
-    const id = req.params.id
-    const user = users.find(user => user.id === parseInt(id))
-    if (user) {
-        res.status(200)
-        .query("select * from users where id = ${id}")
-  } else {
-    res.status(400).send("Not Found")
   }
 });
-
-app.get("/api/users/:id", userById);
